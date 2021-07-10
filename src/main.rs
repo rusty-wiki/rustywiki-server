@@ -59,10 +59,9 @@ async fn test(connection: Data<Mutex<PgConnection>>) -> impl Responder {
 #[actix_rt::main]
 async fn main() -> std::io::Result<()> {
     let _args: Vec<String> = std::env::args().collect();
-
     //let host = "192.168.1.2"; //&args[1];
     let host = "0.0.0.0";
-    let port = 11111; //&args[2];
+    let port = std::env::var("PORT").unwrap_or("11111".to_owned());
     let address = format!("{}:{}", host, port);
 
     let _ = listenfd::ListenFd::from_env();

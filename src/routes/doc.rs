@@ -15,7 +15,7 @@ use crate::models::{InsertDocument, InsertDocumentHistory, SelectDocument, Selec
 use crate::response::{ServerErrorResponse, UnauthorizedResponse};
 use crate::schema::{tb_document, tb_document_history};
 
-#[derive(Deserialize, Validate, Debug)]
+#[derive(Deserialize, Debug, Validate)]
 pub struct WriteDocParam {
     pub title: String,
     pub content: String,

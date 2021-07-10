@@ -27,5 +27,5 @@ uuid = { version = "0.8.1", features = ["serde", "v4"] }
 time = "0.2.25"
 base64 = "0.13.0"
 actix-web-validator = "2.0.3"
-validator = "0.12.0"
+validator = { version = "0.12.0", features = ["derive"] }
 validator_derive = "0.12.0"
