@@ -66,6 +66,8 @@ async fn main() -> std::io::Result<()> {
 
     let _ = listenfd::ListenFd::from_env();
 
+    log::info!("## Server Start At {}", address);
+
     let db = Data::new(Mutex::new(lib::establish_connection()));
     HttpServer::new(move || {
         App::new()
