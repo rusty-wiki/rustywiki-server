@@ -23,10 +23,10 @@ jobs:
               with:
                   platforms: linux/amd64
                   push: true
-                  tags: ghcr.io/lemon-mint/rustywiki-server:${{ env.VERSION }}
+                  tags: ghcr.io/rusty-wiki/rustywiki-server:${{ env.VERSION }}
             - name: Pull From ghcr.io
-              run: docker image pull ghcr.io/lemon-mint/rustywiki-server:${{ env.VERSION }}
+              run: docker image pull ghcr.io/rusty-wiki/rustywiki-server:${{ env.VERSION }}
             - name: Tag latest
-              run: docker image tag ghcr.io/lemon-mint/rustywiki-server:${{ env.VERSION }} ghcr.io/lemon-mint/rustywiki-server:latest
+              run: docker image tag ghcr.io/rusty-wiki/rustywiki-server:${{ env.VERSION }} ghcr.io/rusty-wiki/rustywiki-server:latest
             - name: Push latest
-              run: docker image push ghcr.io/lemon-mint/rustywiki-server:latest
+              run: docker image push ghcr.io/rusty-wiki/rustywiki-server:latest
