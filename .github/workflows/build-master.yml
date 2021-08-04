@@ -1,0 +1,32 @@
+name: build-latest
+
+on:
+    push:
+      branches: [ master ]
+    workflow_dispatch:
+
+jobs:
+    buildx:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Set env
+              run: echo "VERSION=${GITHUB_SHA}" >> $GITHUB_ENV
+            - name: Set up QEMU
+              uses: docker/setup-qemu-action@v1
+            - name: Set up Docker Buildx
+              uses: docker/setup-buildx-action@v1
+            - name: Login to Github
+              run: echo ${{ secrets.GITHUB_TOKEN }} | docker login https://ghcr.io -u USERNAME --password-stdin
+            - name: Build and Push
+              id: docker_build
+              uses: docker/build-push-action@v2
+              with:
+                  platforms: linux/amd64
+                  push: true
+                  tags: ghcr.io/lemon-mint/rustywiki-server:${{ env.VERSION }}
+            - name: Pull From ghcr.io
+              run: docker image pull ghcr.io/lemon-mint/rustywiki-server:${{ env.VERSION }}
+            - name: Tag latest
+              run: docker image tag ghcr.io/lemon-mint/rustywiki-server:${{ env.VERSION }} ghcr.io/lemon-mint/rustywiki-server:latest
+            - name: Push latest
+              run: docker image push ghcr.io/lemon-mint/rustywiki-server:latest
