@@ -58,6 +58,14 @@ async fn test(connection: Data<Mutex<PgConnection>>) -> impl Responder {
 
 #[actix_rt::main]
 async fn main() -> std::io::Result<()> {
+    let _guard = sentry::init((
+        "https://803e7f907f034267a0584727f1c0c4d3@o951848.ingest.sentry.io/5900946",
+        sentry::ClientOptions {
+            release: sentry::release_name!(),
+            ..Default::default()
+        },
+    ));
+
     let _args: Vec<String> = std::env::args().collect();
     //let host = "192.168.1.2"; //&args[1];
     let host = "0.0.0.0";
@@ -66,8 +74,8 @@ async fn main() -> std::io::Result<()> {
 
     let _ = listenfd::ListenFd::from_env();
 
-    log::info!("## Server Start At {}", address);
-
+    println!("## Server Start At {}", address);
+    log::trace!("## Server Start At {}", address);
     let db = Data::new(Mutex::new(lib::establish_connection()));
     HttpServer::new(move || {
         App::new()
