@@ -45,7 +45,8 @@ pub struct SelectTest {
 #[get("/test")]
 async fn test(connection: Data<Mutex<PgConnection>>) -> impl Responder {
     let connection = match connection.lock() {
-        Err(_) => {
+        Err(error) => {
+            sentry::capture_error(&error);
             log::error!("database connection lock error");
             return "error".to_string();
         }
@@ -80,6 +81,7 @@ async fn main() -> std::io::Result<()> {
     HttpServer::new(move || {
         App::new()
             .app_data(db.clone()) //데이터베이스 커넥션 객체 등록
+            .wrap(sentry_actix::Sentry::new())
             .wrap(
                 actix_cors::Cors::default()
                     .allowed_origin("http://localhost:11111")
