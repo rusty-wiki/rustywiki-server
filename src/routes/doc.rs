@@ -35,8 +35,9 @@ pub async fn write_doc(
     connection: Data<Mutex<PgConnection>>,
 ) -> impl Responder {
     let connection = match connection.lock() {
-        Err(_) => {
+        Err(error) => {
             log::error!("database connection lock error");
+            sentry::capture_error(&error);
             let response = ServerErrorResponse::new();
             return HttpResponse::build(StatusCode::INTERNAL_SERVER_ERROR).json(response);
         }
@@ -159,6 +160,7 @@ pub async fn write_doc(
                 }
                 Err(error) => {
                     log::error!("error: {}", error);
+                    sentry::capture_error(&error);
                     let response = ServerErrorResponse::new();
                     HttpResponse::build(StatusCode::INTERNAL_SERVER_ERROR).json(response)
                 }
@@ -166,6 +168,7 @@ pub async fn write_doc(
         }
         Err(error) => {
             log::error!("error: {}", error);
+            sentry::capture_error(&error);
             let response = ServerErrorResponse::new();
             HttpResponse::build(StatusCode::INTERNAL_SERVER_ERROR).json(response)
         }
@@ -193,8 +196,9 @@ pub async fn read_doc(
     connection: Data<Mutex<PgConnection>>,
 ) -> impl Responder {
     let connection = match connection.lock() {
-        Err(_) => {
+        Err(error) => {
             log::error!("database connection lock error");
+            sentry::capture_error(&error);
             let response = ServerErrorResponse::new();
             return HttpResponse::build(StatusCode::INTERNAL_SERVER_ERROR).json(response);
         }
@@ -227,6 +231,7 @@ pub async fn read_doc(
         }
         Err(error) => {
             log::error!("query error: {}", error);
+            sentry::capture_error(&error);
             let response = ReadDocResponse {
                 success: false,
                 not_exists: true,

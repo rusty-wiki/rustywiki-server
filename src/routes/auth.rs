@@ -41,8 +41,9 @@ pub async fn signup(
     connection: Data<Mutex<PgConnection>>,
 ) -> impl Responder {
     let connection = match connection.lock() {
-        Err(_) => {
+        Err(error) => {
             log::error!("database connection lock error");
+            sentry::capture_error(&error);
             let response = ServerErrorResponse::new();
             return HttpResponse::build(StatusCode::INTERNAL_SERVER_ERROR).json(response);
         }
@@ -69,6 +70,7 @@ pub async fn signup(
         }
         Err(error) => {
             log::error!("error: {}", error);
+            sentry::capture_error(&error);
             let response = ServerErrorResponse::new();
             return HttpResponse::build(StatusCode::INTERNAL_SERVER_ERROR).json(response);
         }
@@ -92,6 +94,7 @@ pub async fn signup(
         }
         Err(error) => {
             log::error!("error: {}", error);
+            sentry::capture_error(&error);
             let response = ServerErrorResponse::new();
             return HttpResponse::build(StatusCode::INTERNAL_SERVER_ERROR).json(response);
         }
@@ -122,8 +125,9 @@ pub async fn login(
     connection: Data<Mutex<PgConnection>>,
 ) -> impl Responder {
     let connection = match connection.lock() {
-        Err(_) => {
+        Err(error) => {
             log::error!("database connection lock error");
+            sentry::capture_error(&error);
             let response = ServerErrorResponse::new();
             return HttpResponse::build(StatusCode::INTERNAL_SERVER_ERROR).json(response);
         }
@@ -223,6 +227,7 @@ pub async fn login(
         }
         Err(error) => {
             log::error!("login select query error: {}", error);
+            sentry::capture_error(&error);
             let response = LoginResponse {
                 success: false,
                 login_failed: false,
@@ -298,6 +303,7 @@ pub async fn logout(
         }
         Err(error) => {
             log::error!("logout error: {}", error);
+            sentry::capture_error(&error);
             let response = LogoutResponse {
                 success: false,
                 message: error.to_string(),
@@ -328,8 +334,9 @@ pub async fn refresh(
     connection: Data<Mutex<PgConnection>>,
 ) -> impl Responder {
     let connection = match connection.lock() {
-        Err(_) => {
+        Err(error) => {
             log::error!("database connection lock error");
+            sentry::capture_error(&error);
             let response = ServerErrorResponse::new();
             return HttpResponse::build(StatusCode::INTERNAL_SERVER_ERROR).json(response);
         }
@@ -400,6 +407,7 @@ pub async fn refresh(
                             }
                             Err(error) => {
                                 log::error!("database error: {:?}", error);
+                                sentry::capture_error(&error);
                                 let response = ServerErrorResponse::new();
                                 HttpResponse::build(StatusCode::OK).json(response)
                             }
@@ -429,6 +437,7 @@ pub async fn refresh(
         }
         Err(error) => {
             log::error!("database error: {:?}", error);
+            sentry::capture_error(&error);
             let response = ServerErrorResponse::new();
             return HttpResponse::build(StatusCode::INTERNAL_SERVER_ERROR).json(response);
         }

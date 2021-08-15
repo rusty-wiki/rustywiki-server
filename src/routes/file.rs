@@ -112,8 +112,9 @@ pub async fn upload_file(
     connection: Data<Mutex<PgConnection>>,
 ) -> impl Responder {
     let connection = match connection.lock() {
-        Err(_) => {
+        Err(error) => {
             log::error!("database connection lock error");
+            sentry::capture_error(&error);
             let response = ServerErrorResponse::new();
             return HttpResponse::build(StatusCode::INTERNAL_SERVER_ERROR).json(response);
         }
@@ -208,6 +209,7 @@ pub async fn upload_file(
                 }
                 Err(error) => {
                     log::error!("error: {}", error);
+                    sentry::capture_error(&error);
                     let response = ServerErrorResponse::new();
                     HttpResponse::build(StatusCode::INTERNAL_SERVER_ERROR).json(response)
                 }
@@ -239,8 +241,9 @@ pub async fn update_file(
     connection: Data<Mutex<PgConnection>>,
 ) -> impl Responder {
     let connection = match connection.lock() {
-        Err(_) => {
+        Err(error) => {
             log::error!("database connection lock error");
+            sentry::capture_error(&error);
             let response = ServerErrorResponse::new();
             return HttpResponse::build(StatusCode::INTERNAL_SERVER_ERROR).json(response);
         }
@@ -310,6 +313,7 @@ pub async fn update_file(
         }
         Err(error) => {
             log::error!("error: {}", error);
+            sentry::capture_error(&error);
             let response = ServerErrorResponse::new();
             HttpResponse::build(StatusCode::INTERNAL_SERVER_ERROR).json(response)
         }
@@ -335,8 +339,9 @@ pub async fn read_file(
     connection: Data<Mutex<PgConnection>>,
 ) -> impl Responder {
     let connection = match connection.lock() {
-        Err(_) => {
+        Err(error) => {
             log::error!("database connection lock error");
+            sentry::capture_error(&error);
             let response = ServerErrorResponse::new();
             return HttpResponse::build(StatusCode::INTERNAL_SERVER_ERROR).json(response);
         }
@@ -369,6 +374,7 @@ pub async fn read_file(
         }
         Err(error) => {
             log::error!("query error: {}", error);
+            sentry::capture_error(&error);
             let response = FileReadResponse {
                 success: false,
                 filepath: "".into(),

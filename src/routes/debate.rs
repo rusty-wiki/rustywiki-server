@@ -36,8 +36,9 @@ pub async fn create_debate(
     connection: Data<Mutex<PgConnection>>,
 ) -> impl Responder {
     let connection = match connection.lock() {
-        Err(_) => {
+        Err(error) => {
             log::error!("database connection lock error");
+            sentry::capture_error(&error);
             let response = ServerErrorResponse::new();
             return HttpResponse::build(StatusCode::INTERNAL_SERVER_ERROR).json(response);
         }
@@ -87,6 +88,7 @@ pub async fn create_debate(
         }
         Err(error) => {
             log::error!("error: {}", error);
+            sentry::capture_error(&error);
             let response = ServerErrorResponse::new();
             HttpResponse::build(StatusCode::INTERNAL_SERVER_ERROR).json(response)
         }
@@ -113,8 +115,9 @@ pub async fn write_comment(
     connection: Data<Mutex<PgConnection>>,
 ) -> impl Responder {
     let connection = match connection.lock() {
-        Err(_) => {
+        Err(error) => {
             log::error!("database connection lock error");
+            sentry::capture_error(&error);
             let response = ServerErrorResponse::new();
             return HttpResponse::build(StatusCode::INTERNAL_SERVER_ERROR).json(response);
         }
@@ -173,6 +176,7 @@ pub async fn write_comment(
         }
         Err(error) => {
             log::error!("error: {}", error);
+            sentry::capture_error(&error);
             let response = ServerErrorResponse::new();
             HttpResponse::build(StatusCode::INTERNAL_SERVER_ERROR).json(response)
         }
@@ -205,8 +209,9 @@ pub async fn get_debate_list(
     connection: Data<Mutex<PgConnection>>,
 ) -> impl Responder {
     let connection = match connection.lock() {
-        Err(_) => {
+        Err(error) => {
             log::error!("database connection lock error");
+            sentry::capture_error(&error);
             let response = ServerErrorResponse::new();
             return HttpResponse::build(StatusCode::INTERNAL_SERVER_ERROR).json(response);
         }
@@ -297,6 +302,7 @@ pub async fn get_debate_list(
         }
         Err(error) => {
             log::error!("error: {}", error);
+            sentry::capture_error(&error);
             let response = ServerErrorResponse::new();
             HttpResponse::build(StatusCode::INTERNAL_SERVER_ERROR).json(response)
         }
@@ -329,8 +335,9 @@ pub async fn get_debate(
     connection: Data<Mutex<PgConnection>>,
 ) -> impl Responder {
     let connection = match connection.lock() {
-        Err(_) => {
+        Err(error) => {
             log::error!("database connection lock error");
+            sentry::capture_error(&error);
             let response = ServerErrorResponse::new();
             return HttpResponse::build(StatusCode::INTERNAL_SERVER_ERROR).json(response);
         }
@@ -403,6 +410,7 @@ pub async fn get_debate(
         }
         Err(error) => {
             log::error!("error: {}", error);
+            sentry::capture_error(&error);
             let response = ServerErrorResponse::new();
             HttpResponse::build(StatusCode::INTERNAL_SERVER_ERROR).json(response)
         }

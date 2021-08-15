@@ -32,6 +32,7 @@ pub async fn my_info(
     let connection = match connection.lock() {
         Err(error) => {
             log::error!("database connection lock error: {:?}", error);
+            sentry::capture_error(&error);
             let response = ServerErrorResponse::new();
             return HttpResponse::build(StatusCode::INTERNAL_SERVER_ERROR).json(response);
         }
@@ -66,6 +67,7 @@ pub async fn my_info(
         }
         Err(error) => {
             log::error!("select user error: {:?}", error);
+            sentry::capture_error(&error);
             let response = ServerErrorResponse::new();
             HttpResponse::build(StatusCode::INTERNAL_SERVER_ERROR).json(response)
         }
@@ -87,6 +89,7 @@ pub async fn close_my_account(
     let connection = match connection.lock() {
         Err(error) => {
             log::error!("database connection lock error: {:?}", error);
+            sentry::capture_error(&error);
             let response = ServerErrorResponse::new();
             return HttpResponse::build(StatusCode::INTERNAL_SERVER_ERROR).json(response);
         }
@@ -121,6 +124,7 @@ pub async fn close_my_account(
         }
         Err(error) => {
             log::error!("회원탈퇴 쿼리 오류: {:?}", error);
+            sentry::capture_error(&error);
             let response = ServerErrorResponse::new();
             HttpResponse::build(StatusCode::INTERNAL_SERVER_ERROR).json(response)
         }
