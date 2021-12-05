@@ -18,3 +18,6 @@ pub use user::*;
 
 pub mod debate;
 pub use debate::*;
+
+pub mod grammar;
+pub use grammar::*;

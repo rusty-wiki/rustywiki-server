@@ -1,12 +1,23 @@
 @host = 192.168.1.2:11111
 
 ### 회원가입
+GET http://{{host}}
+Content-Type: application/json
+
+{
+    "email":"foobar2@naver.com",
+    "password": "asdfassasa", 
+    "nickname": "김불닭"
+}
+###
+
+### 회원가입
 POST http://{{host}}/auth/signup
 Content-Type: application/json
 
 {
     "email":"foobar2@naver.com",
-    "password": "asdf", 
+    "password": "asdfassasa", 
     "nickname": "김불닭"
 }
 ###
